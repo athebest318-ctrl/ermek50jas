@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ермек 50 жас</title>
+
+<!-- Торжественный шрифт -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(180deg, #FFF1CC, #EAD7B7);
+    color: #333;
+    text-align: center;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Казахские орнаменты по бокам */
+body::before, body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    background-size: cover;
+    z-index: 1;
+}
+body::before {
+    left: 0;
+    background-image: url('ornament-left.png');
+}
+body::after {
+    right: 0;
+    background-image: url('ornament-right.png');
+}
+
+.container {
+    padding: 30px 15px;
+    max-width: 600px;
+    margin: auto;
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.card {
+    background: rgba(255,255,255,0.85);
+    border-radius: 20px;
+    padding: 25px;
+    max-width: 100%;
+    margin: 20px auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.music-btn, .submit-btn {
+    margin-top: 15px;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 30px;
+    background: gold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.music-btn:hover, .submit-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Фото юбиляра */
+img {
+    width: 100%;
+    border-radius: 20px;
+    margin-top: 15px;
+}
+
+/* Карточки участия */
+.attendance-card {
+    display: inline-block;
+    background: #FFD700;
+    color: #000;
+    border-radius: 15px;
+    padding: 12px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+.attendance-card.selected {
+    background: #FFA500;
+    color: #fff;
+}
+
+/* Карточки гостей */
+.guests-card {
+    display: inline-block;
+    background: #FFE4B5;
+    color: #000;
+    border-radius: 15px;
+    padding: 10px 18px;
+    margin: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.guests-card.selected {
+    background: #FFB347;
+    color: #fff;
+}
+
+/* Сообщение спасибо */
+#thankyou {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.7s ease-in-out;
+}
+
+/* Карта */
+.map {
+    margin-top: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 250px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Ермек 50 жас</h1>
+    <p>Мерей тойына шақырамыз</p>
+
+    <div class="card">
+        📅 <b>22 марта</b><br>
+        🕐 <b>13:00</b><br><br>
+        📍 <b>Костанай, Комарова 6, 110000</b><br>
+        (вход слева)
+
+        <br><br>
+        <button class="music-btn" onclick="playMusic()">🎶 Включить музыку</button>
+        <button class="music-btn" onclick="stopMusic()">⏹ Выключить музыку</button>
+
+        <img src="papa.jpg">
+    </div>
+
+    <!-- Выбор участия -->
+    <div class="card">
+        <p><b>Вы придете?</b></p>
+        <div id="attendance-options">
+            <div class="attendance-card" onclick="selectAttendance(this)">Да</div>
+            <div class="attendance-card" onclick="selectAttendance(this)">Нет</div>
+        </div>
+
+        <p><b>Сколько вас будет?</b></p>
+        <div id="guests-options">
+            <div class="guests-card" onclick="selectGuests(this)">Один</div>
+            <div class="guests-card" onclick="selectGuests(this)">С супругой</div>
+            <div class="guests-card" onclick="selectGuests(this)">Не смогу</div>
+        </div>
+
+        <br>
+        <button class="submit-btn" onclick="submitForm()">Отправить</button>
+
+        <p id="thankyou"></p>
+    </div>
+
+    <!-- Локация -->
+    <div class="card">
+        <p><b>Локация:</b></p>
+        <div class="map">
+            <iframe 
+                src="https://www.google.com/maps?q=Костанай,Комарова%206,110000&output=embed" 
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+<audio id="music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let attendanceValue = null;
+let guestsValue = null;
+
+function playMusic() {
+    document.getElementById("music").play();
+}
+function stopMusic() {
+    let music = document.getElementById("music");
+    music.pause();
+    music.currentTime = 0;
+}
+
+// Выбор участия
+function selectAttendance(el) {
+    document.querySelectorAll('.attendance-card').forEach(card => card.classList.remove('selected'));
+    el.classList.add('selected');
+    attendanceValue = el.innerText;
+}
+
+// Выбор гостей
+function selectGuests(el) {
+    document.querySelectorAll('.guests-card').forEach(card => card.classList.remove('selected'));
+    el.classList.add('selected');
+    guestsValue = el.innerText;
+}
+
+// Отправка через WhatsApp
+function submitForm() {
+    if(!attendanceValue) {
+        alert("Пожалуйста, выберите: придете вы или нет.");
+        return;
+    }
+    if(!guestsValue) guestsValue = "Один";
+
+    let message = "Ответ Ермек 50 жас: " + attendanceValue + ", количество гостей: " + guestsValue;
+
+    // WhatsApp номер
+    window.open("https://wa.me/77767030808?text=" + encodeURIComponent(message));
+
+    let thankyou = document.getElementById("thankyou");
+    thankyou.innerText = "Спасибо! Ваш ответ отправлен.";
+    thankyou.style.opacity = 1;
+}
+</script>
+</body>
+</html>
