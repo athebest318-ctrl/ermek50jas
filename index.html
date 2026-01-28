@@ -249,10 +249,10 @@ function submitForm() {
     let message = "";
 
     if (attendanceValue === "Да") {
-        if (guestsValue === "Один") {
+        if (guestsValue === "Один/Одна") {
             message = "С удовольствием приду на юбилей! Спасибо за приглашение ";
         } 
-        else if (guestsValue === "С супругой") {
+        else if (guestsValue === "С супругой(ом)") {
             message = "С удовольствием придём на юбилей вместе с супругой. Спасибо за приглашение!";
         } 
         else if (guestsValue === "Не смогу") {
@@ -273,3 +273,4 @@ function submitForm() {
     <div class="ornament left"></div>
     <div class="ornament right"></div>
     </html>
+
